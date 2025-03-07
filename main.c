@@ -78,22 +78,26 @@ int main() {
 
             while (strcmp(password, user_id.password) != 0) {
                 puts("enter your password: ");
-                scanf("%s", &password);
+                scanf("%s", password);
                 puts("Invalid password");
+                if (!strcmp(password, user_id.password)) {
+                    puts("Correct password");
+                    break;
             }
-            if (!strcmp(password, user_id.password)) {
-                puts("Correct password");
+
             }
             while (cont == 'y') {
                 system("cls");
                 printf("\n\tWelcome %s\n", user_id.name);
+
                 puts("Press 1 for balance inquiry");
                 puts("Press 2 for adding fund");
                 puts("Press 3 for cash withdraw");
                 scanf("%d", &choice);
+
                 switch(choice){
                     case 1:
-                        printf("Your current balance is Rs. %.2f",user_id.balance);
+                        printf("Your current balance is Rs. %.2f\n",user_id.balance);
                         break;
                     case 2:
                         puts("Enter the amount: ");
@@ -102,24 +106,35 @@ int main() {
                         file = fopen(filename, "w");
                         fwrite(&user_id,sizeof(struct user_info), 1, file);
                         if(fwrite !=NULL)
-                            printf("Deposition successful..");
+                            printf("Deposition successful. Your amount is now %.2f\n", user_id.balance);
                         fclose(file);
                         break;
                     case 3:
                         puts("Enter the amount: ");
                         scanf("%f", &amount);
-                        user_id.balance -=amount;
-                        file = fopen(filename, "w");
-                        fwrite(&user_id,sizeof(struct user_info), 1, file);
-                        if(fwrite !=NULL)
-                            printf("Deposition successful..");
-                        fclose(file);
+
+                        if (amount > user_id.balance) {
+                            printf("Insufficient Balance! Your current balance is Rs. %.2f\n", user_id.balance);
+                        } else if (amount <= 0) {
+                            puts("Invalid amount! Please enter a valid amount.");
+                        } else {
+                            user_id.balance -= amount;
+                            file = fopen(filename, "wb");
+                            fwrite(&user_id, sizeof(struct user_info), 1, file);
+                            if (file != NULL) {
+                                printf("Withdrawal successful! Your new balance is Rs. %.2f\n", user_id.balance);
+                            } else {
+                                printf("Transaction failed! Please try again.\n");
+                            }
+                            fclose(file);
+                        }
                         break;
                     default:
                         puts("Invalid option");
                 }
-                printf("Do you want to continue? [y/n]");
-                scanf("%c", &cont);
+                printf("Do you want to continue? [y/n]: ");
+                scanf(" %c", &cont);
+                printf("Bank account management system has been exited successfully");
             }
 
         }

@@ -1,0 +1,3 @@
+C:/cfiles/C-project-bank-managemet/cmake-build-debug/CMakeFiles/C_project_bank_managemet.dir
+C:/cfiles/C-project-bank-managemet/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/cfiles/C-project-bank-managemet/cmake-build-debug/CMakeFiles/rebuild_cache.dir

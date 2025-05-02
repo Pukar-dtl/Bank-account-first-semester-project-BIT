@@ -39,7 +39,7 @@ int main() {
     }
 
     if (option == 1) {
-        system("cls || clear");  // Cross-platform clear
+        system("cls || clear"); 
         srand((unsigned int)time(0));
         int random_number = 100000000 + rand() % 900000000;
         snprintf(user_id.account_num, sizeof(user_id.account_num), "%d", random_number);
@@ -166,7 +166,7 @@ int main() {
                     break;
             }
 
-            rem_leftover_inp(); // clear any leftover input
+            rem_leftover_inp(); 
             printf("\nDo you want to continue? [y/n]: ");
             scanf(" %c", &cont);
         }

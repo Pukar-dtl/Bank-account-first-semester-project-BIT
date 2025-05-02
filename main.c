@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-struct user_info{
+struct user_info {
     char name[20];
     char account_num[25];
     char password[20];
@@ -13,115 +13,132 @@ struct user_info{
 
 int main() {
     struct user_info user_id;
-    char filename[30], phone[10], password[15];
-    int option = 4 ;
+    char filename[30], phone[20], password[20];
+    int option = 4;
     float amount = 0;
     int choice;
-    char cont= 'y';
+    char cont = 'y';
     FILE *file;
 
-    printf("Enter your choice: \n");
-    printf("\n1.Register an account: ");
-    printf("\n2.Login into your account: ");
-    printf("\n3.Exit: ");
+    printf("Enter your choice:\n");
+    printf("1. Register an account\n");
+    printf("2. Login into your account\n");
+    printf("3. Exit\n");
 
-    while(option>3 || option<=0){
-        printf("\nEnter a option: ");
+    while (option > 3 || option <= 0) {
+        printf("Enter an option: ");
         scanf("%d", &option);
-        if(option>3 || option<=0){
-            printf("Please enter a correct option: ");
+        if (option > 3 || option <= 0) {
+            printf("Please enter a correct option.\n");
         }
     }
 
-    if(option==1) {
-        system("cls");
+    if (option == 1) {
+        #ifdef _WIN32
+            system("cls");
+        #else
+            system("clear");
+        #endif
+
         srand(time(0));
         int random_number = 100000000 + rand() % 900000000;
-        itoa(random_number, user_id.account_num, 15);
+        sprintf(user_id.account_num, "%d", random_number);
 
-        puts("Enter your name: ");
-        scanf("%s", &user_id.name);
+        printf("Enter your name: ");
+        scanf("%s", user_id.name);
 
-        puts("Enter your phone number: ");
-        scanf("%s", &user_id.mobile);
+        printf("Enter your phone number: ");
+        scanf("%s", user_id.mobile);
 
-        puts("Create a new password : ");
-        scanf("%s", &user_id.password);
+        printf("Create a new password: ");
+        scanf("%s", user_id.password);
 
-        user_id.balance = 0;
+        user_id.balance = 0.0;
+
         strcpy(filename, user_id.mobile);
-        file = fopen(strcat(filename, ".dat"), "w");
-        fwrite(&user_id, sizeof(struct user_info), 1, file);
+        strcat(filename, ".dat");
 
-        if (fwrite > 0) {
-            printf("Your account has been registered successfully: \n");
+        file = fopen(filename, "wb");
+        if (file != NULL && fwrite(&user_id, sizeof(struct user_info), 1, file) > 0) {
+            printf("\nYour account has been registered successfully.\n");
             printf("Your account number is: %s\n", user_id.account_num);
-            printf("Your balance is currently: %.2f", user_id.balance);
-        } else
-            printf("An error occurred, please try again: ");
+            printf("Your balance is currently: %.2f\n", user_id.balance);
+        } else {
+            printf("An error occurred. Please try again.\n");
+        }
         fclose(file);
+    }
 
+    else if (option == 2) {
+        #ifdef _WIN32
+            system("cls");
+        #else
+            system("clear");
+        #endif
 
-    }else if(option == 2) {
-        system("cls");
-        puts("Enter your phone number: ");
-        scanf("%s", &phone);
-        puts("enter your password: ");
-        scanf("%s", &password);
+        printf("Enter your phone number: ");
+        scanf("%s", phone);
+        printf("Enter your password: ");
+        scanf("%s", password);
+
         strcpy(filename, phone);
-        file = fopen(strcat(filename, ".dat"), "r");
+        strcat(filename, ".dat");
+
+        file = fopen(filename, "rb");
         if (file == NULL) {
-            puts("Account number not registered: ");
+            printf("Account number not registered.\n");
         } else {
             fread(&user_id, sizeof(struct user_info), 1, file);
             fclose(file);
 
             while (strcmp(password, user_id.password) != 0) {
-                puts("enter your password: ");
+                printf("Invalid password. Try again: ");
                 scanf("%s", password);
-                puts("Invalid password");
-                if (!strcmp(password, user_id.password)) {
-                    puts("Correct password");
-                    break;
             }
+            printf("Correct password.\n");
 
-            }
-            while (cont == 'y') {
-                system("cls");
+            while (cont == 'y' || cont == 'Y') {
+                #ifdef _WIN32
+                    system("cls");
+                #else
+                    system("clear");
+                #endif
+
                 printf("\n\tWelcome %s\n", user_id.name);
-
-                puts("Press 1 for balance inquiry");
-                puts("Press 2 for adding fund");
-                puts("Press 3 for cash withdraw");
+                printf("Press 1 for balance inquiry\n");
+                printf("Press 2 for adding funds\n");
+                printf("Press 3 for cash withdrawal\n");
                 scanf("%d", &choice);
 
-                switch(choice){
+                switch (choice) {
                     case 1:
-                        printf("Your current balance is Rs. %.2f\n",user_id.balance);
+                        printf("Your current balance is Rs. %.2f\n", user_id.balance);
                         break;
+
                     case 2:
-                        puts("Enter the amount: ");
+                        printf("Enter the amount: ");
                         scanf("%f", &amount);
-                        user_id.balance +=amount;
-                        file = fopen(filename, "w");
-                        fwrite(&user_id,sizeof(struct user_info), 1, file);
-                        if(fwrite !=NULL)
-                            printf("Deposition successful. Your amount is now %.2f\n", user_id.balance);
+                        user_id.balance += amount;
+                        file = fopen(filename, "wb");
+                        if (file != NULL && fwrite(&user_id, sizeof(struct user_info), 1, file) > 0) {
+                            printf("Deposition successful. Your balance is now Rs. %.2f\n", user_id.balance);
+                        } else {
+                            printf("Failed to update balance.\n");
+                        }
                         fclose(file);
                         break;
-                    case 3:
-                        puts("Enter the amount: ");
-                        scanf("%f", &amount);
 
+                    case 3:
+                        printf("Enter the amount: ");
+                        scanf("%f", &amount);
                         if (amount > user_id.balance) {
                             printf("Insufficient Balance! Your current balance is Rs. %.2f\n", user_id.balance);
                         } else if (amount <= 0) {
-                            puts("Invalid amount! Please enter a valid amount.");
+                            printf("Invalid amount! Please enter a valid amount.\n");
                         } else {
                             user_id.balance -= amount;
                             file = fopen(filename, "wb");
-                            fwrite(&user_id, sizeof(struct user_info), 1, file);
-                            if (file != NULL) {
+                            if (file != NULL && fwrite(&user_id, sizeof(struct user_info), 1, file) > 0) {
                                 printf("Withdrawal successful! Your new balance is Rs. %.2f\n", user_id.balance);
                             } else {
                                 printf("Transaction failed! Please try again.\n");
@@ -129,16 +146,23 @@ int main() {
                             fclose(file);
                         }
                         break;
+
                     default:
-                        puts("Invalid option");
+                        printf("Invalid option.\n");
+                        break;
                 }
+
                 printf("Do you want to continue? [y/n]: ");
                 scanf(" %c", &cont);
-                printf("Bank account management system has been exited successfully");
             }
 
+            printf("Bank account management system has been exited successfully.\n");
         }
-    } else
-        printf("Bank account management system has been exited successfully");
+    }
+
+    else {
+        printf("Bank account management system has been exited successfully.\n");
+    }
+
     return 0;
 }
